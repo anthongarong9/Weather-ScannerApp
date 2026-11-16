@@ -24,6 +24,10 @@ bun install
 
 Start the development server on `http://localhost:3000`:
 
+The weather page requires a WeatherAPI.com API key. Set it in the `WEATHER_API_KEY`
+environment variable before starting the app. The key is used by the server and is
+not sent to the browser.
+
 ```bash
 # npm
 npm run dev

@@ -1,6 +1,22 @@
 <script setup lang="ts">
+import { useWeather } from '../composables/useWeather'
+
 definePageMeta({ title: 'Welcome' })
 const user = useAuthUser()
+const { fetchWeather } = useWeather()
+const weather = ref<Awaited<ReturnType<typeof fetchWeather>> | null>(null)
+const weatherError = ref('')
+const weatherLoading = ref(true)
+
+onMounted(async () => {
+  try {
+    weather.value = await fetchWeather()
+  } catch {
+    weatherError.value = 'Unable to load weather right now.'
+  } finally {
+    weatherLoading.value = false
+  }
+})
 </script>
 
 <template>
@@ -37,12 +53,26 @@ const user = useAuthUser()
       </v-col>
 
       <v-col cols="12" md="6">
-        <v-card to="/html5-qrcode" hover rounded="lg" class="pa-4" height="100%">
-          <v-icon size="36" color="primary" class="mb-2">mdi-qrcode</v-icon>
-          <div class="text-h6 font-weight-medium">HTML 5 QR Scanner</div>
-          <div class="text-body-2 text-medium-emphasis">
-            Continuous scanner with live scan history tracking.
+        <v-card to="/weather" hover rounded="lg" class="pa-4" height="100%">
+          <div class="d-flex align-center justify-space-between mb-2">
+            <div class="text-h6 font-weight-medium">Weather</div>
+            <v-icon size="36" color="primary">mdi-weather-partly-cloudy</v-icon>
           </div>
+          <div v-if="weatherLoading" class="text-body-2 text-medium-emphasis">
+            Loading current weather...
+          </div>
+          <v-alert v-else-if="weatherError" type="error" variant="tonal">
+            {{ weatherError }}
+          </v-alert>
+          <template v-else-if="weather">
+            <div class="text-h4 font-weight-bold">
+              {{ Math.round(weather.current.temp_c) }}°C
+            </div>
+            <div class="text-body-1">{{ weather.current.condition.text }}</div>
+            <div class="text-body-2 text-medium-emphasis">
+              {{ weather.location.name }}, {{ weather.location.region }}
+            </div>
+          </template>
         </v-card>
       </v-col>
     </v-row>

@@ -6,7 +6,7 @@ const user = useAuthUser()
 const navItems = [
   { title: 'Welcome', icon: 'mdi-view-dashboard-outline', to: '/' },
   { title: 'Scan', icon: 'mdi-qrcode-scan', to: '/scan' },
-  { title: 'HTML 5 QR Scanner', icon: 'mdi-qrcode', to: '/html5-qrcode' },
+  { title: 'Weather', icon: 'mdi-weather-partly-cloudy', to: '/weather' },
 ]
 
 function handleLogout() {
